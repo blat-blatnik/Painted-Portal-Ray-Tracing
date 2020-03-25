@@ -31,7 +31,7 @@ And, ofcourse, portals are recursive.
 
 ## Impressionist painting style
 
-![painting style](painted-portal.png)
+![painting style](/screenshots/painted-portal.png)
 
 ## Dynamic world
 
