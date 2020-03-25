@@ -51,13 +51,13 @@ We re-used the ray tracing code from the shader in our gameplay code to implemen
 
 ## Hot-patch shader loading
 
-We keep track of changes made to the shader files during runtime. When you change a shader, it will _immediately_ be recompiled and injected into the program _at runtime_, so you can instantly get feedback on what changed. This makes it very easy and fun to experiment with our shaders while running - try it out for yourself. For example, the painting shader is disabled by default from the `paintfrag.glsl` file. If you comment out the `return` statement near the beggning of `main` the painting effect will be enabled.
+We keep track of changes made to the shader files during runtime. When you change a shader, it will _immediately_ be recompiled and injected into the program _at runtime_, so you can instantly get feedback on what changed. This makes it very easy and fun to experiment with our shaders while running - try it out for yourself. For example, the painting shader is disabled by default from the [`paintfrag.glsl`](/shaders/paintfrag.glsl) file. If you comment out the `return` statement near the beggning of `main` the painting effect will be enabled.
 
 ## How to compile..
 
 #### .. with Visual Studio 
 
-download the Visual Studio project file in the `/bin` directory. Everything should already be set-up.
+download the Visual Studio project file in the [`/bin`](/bin) directory. Everything should already be set-up.
 
 #### .. with GCC or clang
 
@@ -67,7 +67,7 @@ Make sure to install [GLFW](https://www.glfw.org/download.html) with your packag
 
 `$ clang++ -O2 src/*.cpp -lm -lglfw`
 
-A version of GLFW is provided in `/lib` but it might not work on your computer..
+A version of GLFW is provided in [`/lib`](/lib) but it might not work on your computer..
 
 ### Requirements
 
@@ -79,7 +79,7 @@ A version of GLFW is provided in `/lib` but it might not work on your computer..
 
 ### Running
 
-Just run the executable you compiled and make sure the `shaders/` and `textures/` directories are in the same directory as the executable. Also make sure not to rename or delete any of the files.
+Just run the executable you compiled and make sure the [`shaders/`](/shaders) and [`textures/`](/textures) directories are in the same directory as the executable. Also make sure not to rename or delete any of the files.
 
 If you couldn't get the code to compile for whatever reason you can try running the pre-compiled exectables in the [`/bin`](/bin) directory. One is for 64-bit windows, and the other is for 64-bit linux.
 
