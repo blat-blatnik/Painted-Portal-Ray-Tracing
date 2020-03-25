@@ -23,7 +23,7 @@ We obviously get very nice reflections from the ray-tracing. The ray-tracer supp
 
 ![shadows](/screenshots/shadows.png)
 
-Same as the reflections, the nice dynamic shadows are a result of the ray-tracing. We use basic [Phong lighting](https://en.wikipedia.org/wiki/Phong_reflection_model) to light the scene, nothing special.
+Same as the reflections, the nice dynamic shadows are a result of the ray-tracing. We use basic [Phong lighting](https://en.wikipedia.org/wiki/Phong_reflection_model) to light the scene, nothing special. Take a look at the [shader code](/shaders/rayfrag.glsl).
 
 ## Portals
 
@@ -79,7 +79,7 @@ A version of GLFW is provided in [`/lib`](/lib) but it might not work on your co
 
 ### Running
 
-Just run the executable you compiled and make sure the [`shaders/`](/shaders) and [`textures/`](/textures) directories are in the same directory as the executable. Also make sure not to rename or delete any of the files.
+Just run the executable you compiled and make sure the [`/shaders`](/shaders) and [`/textures`](/textures) directories are in the same directory as the executable. Also make sure not to rename or delete any of the files.
 
 If you couldn't get the code to compile for whatever reason you can try running the pre-compiled exectables in the [`/bin`](/bin) directory. One is for 64-bit windows, and the other is for 64-bit linux.
 
