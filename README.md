@@ -79,7 +79,9 @@ A version of GLFW is provided in `/lib` but it might not work on your computer..
 
 ### Running
 
-Just run the executable and make sure the `shaders/` and `textures/` directories are in the same directory as the executable. Also make sure not to rename or delete any of the files.
+Just run the executable you compiled and make sure the `shaders/` and `textures/` directories are in the same directory as the executable. Also make sure not to rename or delete any of the files.
+
+If you couldn't get the code to compile for whatever reason you can try running the pre-compiled exectables in the [`/bin`](/bin) directory. One is for 64-bit windows, and the other is for 64-bit linux.
 
 ### Libraries used
 - [GLFW](https://www.glfw.org/) for opening windows and OpenGL context creation.
@@ -91,6 +93,6 @@ Just run the executable and make sure the `shaders/` and `textures/` directories
 
 You can _move_ around with `WASD`, and _look_ around with the mouse. You can _jump_ with `spacebar` and also _double jump_ if you jump while in the air. The left and right mouse buttons will place the two portals to the surface you are looking at.
 
-You can press `B` to go into _build-mode_. While in build mode you aren't affected by gravity, and you don't collide with the geometry. Instead you can press `spacebar` to _go up_, and `control` to go down. `Left-clicking` will _place a block_ instead of a portal. You can _choose the material_ of the block being placed with the `mouse-wheel`. Pressing `P` will _take you out_ of build mode.
+You can press `B` to go into _build-mode_. While in build mode you aren't affected by gravity, and you don't collide with the geometry. Instead you can press `spacebar` to _go up_, and `control` to _go down_. `Left-clicking` will _place a block_ instead of a portal. You can _choose the material_ of the block being placed with the `mouse-wheel` or numbers `0`..`9`. Pressing `P` will _take you out_ of build mode.
     
 Have fun! :)
