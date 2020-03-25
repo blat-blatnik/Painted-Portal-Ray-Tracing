@@ -9,7 +9,7 @@ This program..
 1. Does not run using Qt. It uses a couple of different libraries (see below) however even all of them combined have way fewer features than the massive Qt library, so we hope you will still judge this to be fair game for the competition.
 2. Is a **massive** performance hog. You will definitely need a decent dedicated graphics card in order to run this smoothly.
 3. Requires **at least** OpenGL 4.3 since we use [shader storage buffers](https://www.khronos.org/opengl/wiki/Shader_Storage_Buffer_Object).
-4. Relies on a good GLSL compiler so **you need a good OpenGL driver** that can optimize our shaders and perform register allocation.
+4. Relies on a good GLSL compiler so **you need a good OpenGL driver** that can optimize our shaders and perform register allocation. Some drivers can't do this..
 
 With those uh.. minor quirks.. out of the way, I think our results speak for themselves.
 
@@ -17,15 +17,19 @@ With those uh.. minor quirks.. out of the way, I think our results speak for the
 
 ![reflections](/screenshots/reflections.png)
 
+We obviously get very nice reflections from the ray-tracing. The ray-tracer supports 3 basic shapes: planes, spheres, and voxels. Ray tracing is the first of our 2 render passes, and it is obviously _very_ expensive - especially since we don't have any spatial acceleration structures (yet). To mitigate this cost, we normally render to a small 256 x 256 texture. This is later upsampled to the whole screen in the second render pass. On (very) powerfull hardware this intermediary texture can be made larger.
+
 ## Shadows
 
 ![shadows](/screenshots/shadows.png)
+
+Same as the reflections, the nice dynamic shadows are a result of the ray-tracing. We use basic [Phong lighting](https://en.wikipedia.org/wiki/Phong_reflection_model) to light the scene, nothing special.
 
 ## Portals
 
 ![portals](/screenshots/portal.png)
 
-And, ofcourse, portals are recursive.
+Portals are the star of this show. We introduced them as soon as we realized how easy it would be to move and distort rays as they hit objects. There are always 2 portals in the scene, an orange portal and a blue portal, when we detect a ray hitting a portal we simply teleport the ray to the other portal and we keep on tracing it - easy. And, ofcourse, portals are recursive.
 
 ![portal recursion](/screenshots/recursion.png)
 
@@ -33,22 +37,49 @@ And, ofcourse, portals are recursive.
 
 ![painting style](/screenshots/painted-portal.png)
 
+Since the ray tracing output texture is very low-res, we thought we could use some paint to cover up the edges! After a trip to the Groningen Museum we got inspired by some of [Johan Dijkstra's paintings](https://klaasamulder.wordpress.com/2005/09/20/wat-leuk-weer-een-johan-dijkstra-gevondendagblad-vh-noorden/) and so we looked for some shaders on [Shadertoy](https://www.shadertoy.com/). We found [this shader](https://www.shadertoy.com/view/MtKcDG) made by Florian Berger. It looks great! The only problem is that its extremely slow - even slower than the ray tracing.. So we optimized it heavily and removed all but the necessary features to get a very similar effect. This painting shader is applied during the second rendering pass.
+
 ## Dynamic world
 
 ![dynamic world](/screenshots/scene3.png)
 
+We made a simple datastructure that synchronizes data between the CPU and GPU. Using that, modifying the scene at runtime is trivial. Objects and lights can be added to scene using point and click editing at runtime - that's how we made the default scene.
+
 ## Collision detection
+
+We re-used the ray tracing code from the shader in our gameplay code to implement player collisions with the environment. We then added gravity and got a relatively fun first person platforming game out of it. Ofcourse, we also implemented camera portal-travel, and you can shoot the portals anywhere!
 
 ## Hot-patch shader loading
 
-## How to compile
+We keep track of changes made to the shader files during runtime. When you change a shader, it will _immediately_ be recompiled and injected into the program _at runtime_, so you can instantly get feedback on what changed. This makes it very easy and fun to experiment with our shaders while running - try it out for yourself. For example, the painting shader is disabled by default from the `paintfrag.glsl` file. If you comment out the `return` statement near the beggning of `main` the painting effect will be enabled.
+
+## How to compile..
+
+#### .. with Visual Studio 
+
+download the Visual Studio project file in the `/bin` directory. Everything should already be set-up.
+
+#### .. with GCC or clang
+
+Make sure to install [GLFW](https://www.glfw.org/download.html) with your package manager:
+
+`$ g++ -O2 src/*.cpp -lm -lglfw`
+
+`$ clang++ -O2 src/*.cpp -lm -lglfw`
+
+A version of GLFW is provided in `/lib` but it might not work on your computer..
 
 ### Requirements
 
 - C++03 compiler
 - OpenGL 4.3 capable GPU
 - Good GPU drivers
+- Decently powerful computer
 - GLFW library installed on your system (or use the one we provide)
+
+### Running
+
+Just run the executable and make sure the `shaders/` and `textures/` directories are in the same directory as the executable. Also make sure not to rename or delete any of the files.
 
 ### Libraries used
 - [GLFW](https://www.glfw.org/) for opening windows and OpenGL context creation.
@@ -57,16 +88,9 @@ And, ofcourse, portals are recursive.
 - [STB Image](https://github.com/nothings/stb) for opening .png files.
 
 ### Controls
-- (P)lay mode
-    - Right-click: portal, on the surface you are aiming at
-    - Left-click: companion portal, on the surface you are aiming at
-    - Space: Jump, Double jump
-    - WASD: Movement
+
+You can _move_ around with `WASD`, and _look_ around with the mouse. You can _jump_ with `spacebar` and also _double jump_ if you jump while in the air. The left and right mouse buttons will place the two portals to the surface you are looking at.
+
+You can press `B` to go into _build-mode_. While in build mode you aren't affected by gravity, and you don't collide with the geometry. Instead you can press `spacebar` to _go up_, and `control` to go down. `Left-clicking` will _place a block_ instead of a portal. You can _choose the material_ of the block being placed with the `mouse-wheel`. Pressing `P` will _take you out_ of build mode.
     
-- (B)uild mode (flight enabled, collision disabled, portals disabled):
-Build mode allows you to place voxels one at a time, wherever you want in order to build a scene/level or whatever you want really.
-    - Left-click: Add voxel where the crosshair is pointing
-    - Right-click: Remove the voxel you are aiming at
-    - Scroll: Change the material of voxel (Can be seen in the title bar)
-    - Middle-click: If you have a console open, this will return the function with the position of every voxel in the scene so that they may be pasted in the initialisation function.
-    - WASD: Movement
+Have fun! :)
