@@ -61,6 +61,7 @@ static GpuSyncedList<Sphere> spheres;
 static GpuSyncedList<Voxel> voxels;
 static GpuSyncedList<Portal> portals;
 static uint raytraceOutputFramebuffer;
+static uint fullscreenQuadVAO;
 static Texture raytraceOutputTexture;
 
 static const float jumpVelocity = 10;
@@ -190,17 +191,17 @@ static int getClosestPortal(vec3 pos) {
 }
 static void printPickedMaterial() {
 	switch (material) {
-	case 1:  printf("selected Cyan\n"); break;
-	case 2:	 printf("selected Dirt\n"); break;
-	case 3:	 printf("selected Dark Wood\n"); break;
-	case 4:	 printf("selected Wood\n"); break;
-	case 5:	 printf("selected Stone\n"); break;
-	case 6:	 printf("selected Chisled Stone\n"); break;
-	case 7:	 printf("selected Bricks\n"); break;
-	case 8:	 printf("selected Quartz\n"); break;
-	case 9:	 printf("selected Purple\n"); break;
-	case 10: printf("selected Candy\n"); break;
-	default: printf("selected material %d\n", (int)material); break;
+		case 1:  printf("selected Cyan\n"); break;
+		case 2:	 printf("selected Dirt\n"); break;
+		case 3:	 printf("selected Dark Wood\n"); break;
+		case 4:	 printf("selected Wood\n"); break;
+		case 5:	 printf("selected Stone\n"); break;
+		case 6:	 printf("selected Chisled Stone\n"); break;
+		case 7:	 printf("selected Bricks\n"); break;
+		case 8:	 printf("selected Quartz\n"); break;
+		case 9:	 printf("selected Purple\n"); break;
+		case 10: printf("selected Candy\n"); break;
+		default: printf("selected material %d\n", (int)material); break;
 	}
 }
 static float getDistanceToNearestObject(vec3 from, vec3 dir) {
@@ -691,13 +692,19 @@ void gameOnInit(GLFWwindow *w) {
 
 	raytraceShader = loadShader("shaders/rayvert.glsl", "shaders/rayfrag.glsl");
 	paintShader = loadShader("shaders/paintvert.glsl", "shaders/paintfrag.glsl");
+	
 	vec2 vertData[] = {
 		{ -1, 1 },
 		{ -1,-1 },
 		{  1, 1 },
 		{  1,-1 }
 	};
+	glGenVertexArrays(1, &fullscreenQuadVAO);
+	glBindVertexArray(fullscreenQuadVAO);
 	fullscreenQuad = createGpuBuffer(vertData, sizeof(vertData));
+	glEnableVertexAttribArray(0);
+	glVertexAttribPointer(0, 2, GL_FLOAT, false, sizeof(vec2), 0);
+
 	loadScene();
 }
 void gameOnTerminate() {
@@ -838,11 +845,7 @@ void gameOnUpdate(double dt) {
 	spheres.bind(GL_SHADER_STORAGE_BUFFER, 3);
 	voxels.bind(GL_SHADER_STORAGE_BUFFER, 4);
 	portals.bind(GL_SHADER_STORAGE_BUFFER, 5);
-	bindGpuBuffer(fullscreenQuad, GL_ARRAY_BUFFER, 0);
 	bindTextureArray(textureAtlas, 0);
-
-	glEnableVertexAttribArray(0);
-	glVertexAttribPointer(0, 2, GL_FLOAT, false, sizeof(vec2), 0);
 
 	int width, height;
 	glfwGetFramebufferSize(window, &width, &height);
@@ -872,8 +875,8 @@ void gameOnUpdate(double dt) {
 	while (timeAcc >= 1) {
 		char buffer[256];
 		sprintf(buffer, "Painted Portal Tracer [%.1lf fps] - %s mode", frameAcc / timeAcc,
-			gameMode == PlayMode ? "play mode" :
-			gameMode == BuildMode ? "build mode" :
+			gameMode == PlayMode ? "play" :
+			gameMode == BuildMode ? "build" :
 			"???");
 		glfwSetWindowTitle(window, buffer);
 		timeAcc = 0;

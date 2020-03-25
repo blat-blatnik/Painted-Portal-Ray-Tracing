@@ -44,14 +44,19 @@ static void onGlError(GLenum source, GLenum type, GLuint id, GLenum severity, GL
 }
 
 int main(int argc, char *argv[]) {
-	// Initialize GLFW
+	// Initialize GLFW.
 	glfwSetErrorCallback(onGlfwError);
 	int glfwOk = glfwInit();
 	assert(glfwOk == GLFW_TRUE);
 
-	// We don't use depth and stencil buffers
+	// We don't use depth and stencil buffers.
 	glfwWindowHint(GLFW_DEPTH_BITS, 0);
 	glfwWindowHint(GLFW_STENCIL_BITS, 0);
+	// We need at least OpenGL 4.3 for shader buffers.
+	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
+	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
+	glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GLFW_TRUE);
+	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 #ifndef NDEBUG
 	glfwWindowHint(GLFW_OPENGL_DEBUG_CONTEXT, GLFW_TRUE);
 #endif
@@ -73,6 +78,11 @@ int main(int argc, char *argv[]) {
 	const char *renderer = (const char *)glGetString(GL_RENDERER);
 	const char *version = (const char *)glGetString(GL_VERSION);
 	printf("using OpenGL %s: %s\n", version, renderer);
+
+	if (!(GLVersion.major >= 4 && GLVersion.minor >= 3)) {
+		printf("ERROR: need at least OpenGL 4.3 to run .. exiting\n");
+		abort();
+	}
 
 	// Enable gamma correction ..
 	//NOTE: this is probably incorrect since we are rendering the scene TWICE

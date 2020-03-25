@@ -273,14 +273,14 @@ Shader loadShader(const char *vertFile, const char *fragFile) {
 		shaderSources[program] = sources;
 
 		auto recompileShader = [](const char *filename, void *shaderID) {
-			GLuint id = (GLuint)shaderID;
+			GLuint id = (GLuint)(size_t)shaderID;
 			ShaderSources sources = shaderSources[id];
 			compileAndLinkShader(id, sources.vertFile, sources.fragFile);
 			return true;
 		};
 
-		trackFileChanges(vertFile, (void *)program, recompileShader);
-		trackFileChanges(fragFile, (void *)program, recompileShader);
+		trackFileChanges(vertFile, (void *)(size_t)program, recompileShader);
+		trackFileChanges(fragFile, (void *)(size_t)program, recompileShader);
 	}
 
 	glCheckErrors();
