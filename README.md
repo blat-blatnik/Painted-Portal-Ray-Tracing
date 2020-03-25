@@ -9,7 +9,7 @@ This program..
 1. Does not run using Qt. It uses a couple of different libraries (see below) however even all of them combined have way fewer features than the massive Qt library, so we hope you will still judge this to be fair game for the competition.
 2. Is a **massive** performance hog. You will definitely need a decent dedicated graphics card in order to run this smoothly.
 3. Requires **at least** OpenGL 4.3 since we use [shader storage buffers](https://www.khronos.org/opengl/wiki/Shader_Storage_Buffer_Object).
-4. Relies on a good GLSL compiler so **you need a good OpenGL driver** that can optimize our shaders and perform register allocation. Some drivers can't do this..
+4. Relies on a good OpenGL **driver** that can optimize our shaders and perform register allocation. Some drivers can't do this..
 
 With those uh.. minor quirks.. out of the way, I think our results speak for themselves.
 
@@ -63,9 +63,13 @@ download the Visual Studio project file in the [`/bin`](/bin) directory. Everyth
 
 Make sure to install [GLFW](https://www.glfw.org/download.html) with your package manager:
 
-`$ g++ -O2 src/*.cpp -lm -lglfw`
+```bash
+$ g++ -O2 src/*.cpp -lm -lglfw
+```
 
-`$ clang++ -O2 src/*.cpp -lm -lglfw`
+```bash
+$ clang++ -O2 src/*.cpp -lm -lglfw
+```
 
 A version of GLFW is provided in [`/lib`](/lib) but it might not work on your computer..
 
@@ -93,6 +97,6 @@ If you couldn't get the code to compile for whatever reason you can try running 
 
 You can _move_ around with `WASD`, and _look_ around with the mouse. You can _jump_ with `spacebar` and also _double jump_ if you jump while in the air. The left and right mouse buttons will place the two portals to the surface you are looking at.
 
-You can press `B` to go into _build-mode_. While in build mode you aren't affected by gravity, and you don't collide with the geometry. Instead you can press `spacebar` to _go up_, and `control` to _go down_. `Left-clicking` will _place a block_ instead of a portal. You can _choose the material_ of the block being placed with the `mouse-wheel` or numbers `0`..`9`. Pressing `P` will _take you out_ of build mode.
+You can press `B` to go into _build-mode_. While in build mode you aren't affected by gravity, and you don't collide with the geometry. Instead you can press `spacebar` to _go up_, and `control` to _go down_. `Left-click` will _place a block_ instead of a portal. You can _choose the material_ of the block being placed with the `mouse-wheel` or numbers `0`..`9`. Pressing `P` will _take you out_ of build mode.
     
 Have fun! :)
