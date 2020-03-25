@@ -36,17 +36,17 @@ What we have implemented:
 
 
 
-- Controls:
-    - (P)Play mode
-        - Right-click: portal, on the surface you are aiming at
-        - Left-click: companion portal, on the surface you are aiming at
-        - Space: Jump, Double jump
-        - WASD: Movement
+Controls:
+- (P)Play mode
+    - Right-click: portal, on the surface you are aiming at
+    - Left-click: companion portal, on the surface you are aiming at
+    - Space: Jump, Double jump
+    - WASD: Movement
     
-    - (B)Build mode (Flight enabled, collision disabled, portals disabled):
+- (B)Build mode (Flight enabled, collision disabled, portals disabled):
 Build mode allows you to place voxels one at a time, wherever you want in order to build a scene/level or whatever you want really.
-        - Left-click: Add voxel where the crosshair is pointing
-        - Right-click: Remove the voxel you are aiming at
-        - Scroll: Change the material of voxel (Can be seen in the title bar)
-        - Middle-click: If you have a console open, this will return the function with the position of every voxel in the scene so that they may be pasted in the initialisation function.
-        - WASD: Movement
+    - Left-click: Add voxel where the crosshair is pointing
+    - Right-click: Remove the voxel you are aiming at
+    - Scroll: Change the material of voxel (Can be seen in the title bar)
+    - Middle-click: If you have a console open, this will return the function with the position of every voxel in the scene so that they may be pasted in the initialisation function.
+    - WASD: Movement
