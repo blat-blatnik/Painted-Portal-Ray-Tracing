@@ -37,26 +37,16 @@ What we have implemented:
 
 
 - Controls:
-
-(P)Portal mode:
-Portal mode is supposed to be similar to what a game would play like.
-    Right-click: portal, on the surface you are aiming at
-    Left-click: companion portal, on the surface you are aiming at
-    Space: Jump, Double jump
-    WASD: Movement
+    - (P)Play mode
+        - Right-click: portal, on the surface you are aiming at
+        - Left-click: companion portal, on the surface you are aiming at
+        - Space: Jump, Double jump
+        - WASD: Movement
     
-(B)Build mode (Flight enabled, collision disabled, portals disabled):
+    - (B)Build mode (Flight enabled, collision disabled, portals disabled):
 Build mode allows you to place voxels one at a time, wherever you want in order to build a scene/level or whatever you want really.
-    Left-click: Add voxel where the crosshair is pointing
-    Right-click: Remove the voxel you are aiming at
-    Scroll: Change the material of voxel (Can be seen in the title bar)
-    Middle-click: If you have a console open, this will return the function with the position of every voxel in the scene so that they may be pasted in the initialisation function.
-    WASD: Movement
-    
-(E)Edit mode (Flight enabled, collision disabled, portals disabled):
-Edit mode is similar in scope to Build mode; however, this mode is for generating a large number of voxels very quickly. Click on any two surfaces that are pointing in the same direction and the entirety of the space between them will be filled with voxels having the texture the was currently selected.
-(Be very careful with this mode as adding many voxels to the scene will cause significant degradation to performance)
-    Left/Right-click: sets the start/end positions between which voxels will be populated
-    Middle-click: adds the voxels to the scene between the two set positions.
-    Scroll: Change the material of voxel (Can be seen in the title bar)
-    WASD: Movement
+    - Left-click: Add voxel where the crosshair is pointing
+    - Right-click: Remove the voxel you are aiming at
+    - Scroll: Change the material of voxel (Can be seen in the title bar)
+    - Middle-click: If you have a console open, this will return the function with the position of every voxel in the scene so that they may be pasted in the initialisation function.
+    - WASD: Movement
