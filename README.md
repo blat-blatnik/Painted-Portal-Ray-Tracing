@@ -88,7 +88,7 @@ Just run the executable you compiled and make sure the [`/shaders`](/shaders) an
 If you couldn't get the code to compile for whatever reason you can try running the pre-compiled exectables in the [`/bin`](/bin) directory. One is for 64-bit windows, and the other is for 64-bit linux.
 
 ### Libraries used
-- [GLFW](https://www.glfw.org/) for opening windows and OpenGL context creation.
+- [GLFW](https://www.glfw.org/) for opening a window and creating an OpenGL context.
 - [GLAD](https://glad.dav1d.de/) for loading OpenGL functions.
 - [GLM](https://glm.g-truc.net/0.9.9/index.html) for math.
 - [STB Image](https://github.com/nothings/stb) for opening .png files.
