@@ -61,7 +61,7 @@ download the Visual Studio project file in the [`/bin`](/bin) directory. Everyth
 
 #### .. with GCC or clang
 
-Make sure to install [GLFW](https://www.glfw.org/download.html) with your package manager:
+Make sure to install [GLFW](https://www.glfw.org/download.html) with your package manager. You will need to statically link against the appropriate library for your operating system.
 
 ```bash
 $ g++ -O2 src/*.cpp -lm -lglfw
@@ -71,7 +71,7 @@ $ g++ -O2 src/*.cpp -lm -lglfw
 $ clang++ -O2 src/*.cpp -lm -lglfw
 ```
 
-A version of GLFW is provided in [`/lib`](/lib) but it might not work on your computer..
+Version of GLFW for [Windows](/lib/glfw3.lib), [Linux](/lib/libglfw3.so), and [Mac](/lib/libglfw3.a) are provided in [`/lib`](/lib) but it might not work on your computer..
 
 ### Requirements
 
