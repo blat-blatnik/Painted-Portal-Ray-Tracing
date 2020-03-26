@@ -71,7 +71,7 @@ $ g++ -O2 src/*.cpp -lm -lglfw
 $ clang++ -O2 src/*.cpp -lm -lglfw
 ```
 
-Version of GLFW for [Windows](/lib/glfw3.lib), [Linux](/lib/libglfw3.so), and [Mac](/lib/libglfw3.a) are provided in [`/lib`](/lib) but it might not work on your computer..
+Version of GLFW for [Windows](/lib/glfw3.lib), [Linux](/lib/libglfw3.so), and [Mac](/lib/libglfw3.a) are provided in the [`/lib`](/lib) directory.
 
 ### Requirements
 
