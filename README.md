@@ -17,7 +17,7 @@ With those uh.. minor quirks.. out of the way, I think our results speak for the
 
 ![reflections](/screenshots/reflections.png)
 
-We obviously get very nice reflections from the ray-tracing. The ray-tracer supports 3 basic shapes: planes, spheres, and voxels. Ray tracing is the first of our 2 render passes, and it is obviously _very_ expensive - especially since we don't have any spatial acceleration structures (yet). To mitigate this cost, we normally render to a small 256 x 256 texture. This is later upsampled to the whole screen in the second render pass. On (very) powerfull hardware this intermediary texture can be made larger.
+We obviously get very nice reflections from the ray-tracing. The ray-tracer supports 3 basic shapes: planes, spheres, and voxels. Ray tracing is the first of our 2 render passes, and it is obviously _very_ expensive - especially since we don't have any spatial acceleration structures (yet). To mitigate this cost, we normally render to a small 256 x 256 texture. This is later upsampled to the whole screen in the second render pass. On (very) powerfull hardware this intermediary texture can be made larger, thats why the screenshots look so crisp.
 
 ## Shadows
 
