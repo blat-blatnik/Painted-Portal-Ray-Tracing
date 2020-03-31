@@ -52,7 +52,7 @@ We re-used the ray tracing code from the shader in our gameplay code to implemen
 
 We keep track of changes made to the shader files during runtime. When you change a shader, it will _immediately_ be recompiled and injected into the program _at runtime_, so you can instantly get feedback on what changed. This makes it very easy and fun to experiment with our shaders while running - try it out for yourself. For example, the painting shader is disabled by default from the [`paintfrag.glsl`](/shaders/paintfrag.glsl) file. If you comment out the `return` statement near the beggning of `main` the painting effect will be enabled.
 
-## Qt information
+## About the Qt version
 
 This program was originally designed without Qt. We have used the one week of the extended deadline to implent a Qt port so that we can adhere by the competition rules. You can find a zip file containing the full Qt project [here](/Qt%20Port.zip). The Qt port is provided **only** in order to adhere to the guidelines of the competition. If you want to actually try to compile or run this program WE STRONGLY ADVISE AGAINST USING THE QT PORT.
 
