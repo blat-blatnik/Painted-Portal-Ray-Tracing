@@ -1,6 +1,6 @@
 # Painted Portal real-time Ray Tracing
 
-Playing around with real time raytracing and non-photorealistic rendering. For the contest subission of the Computer Graphics course University of Groningen 2020. Since this is a _ray tracer_ running in real time _with_ OpenGL, this is a submission for both of the contests.
+Playing around with real time raytracing and non-photorealistic rendering. For the contest subission of the Computer Graphics course University of Groningen 2020. There were two categories for the competition: OpenGL realtime rendering, and ray tracing. Since this is a _ray tracer_ running in real time _with_ OpenGL, this is a submission for both contest categories.
 
 ## Things to note
 
@@ -8,8 +8,8 @@ This program..
 
 1. Does not run using Qt. It uses a couple of different libraries (see below) however even all of them combined have way fewer features than the massive Qt library, so we hope you will still judge this to be fair game for the competition.
 2. Is a **massive** performance hog. You will definitely need a decent dedicated graphics card in order to run this smoothly.
-3. Requires **at least** OpenGL 4.3 since we use [shader storage buffers](https://www.khronos.org/opengl/wiki/Shader_Storage_Buffer_Object).
-4. Relies on a good OpenGL **driver** that can optimize our shaders and perform register allocation. Some drivers can't do this..
+3. Requires **at least** OpenGL 4.3 (2012 or newer hardware) since we use [shader storage buffers](https://www.khronos.org/opengl/wiki/Shader_Storage_Buffer_Object).
+4. Relies on a good OpenGL **driver** to compile our shaders. Some open-source linux drivers that we tested couldn't do this..
 
 With those uh.. minor quirks.. out of the way, I think our results speak for themselves.
 
@@ -17,7 +17,7 @@ With those uh.. minor quirks.. out of the way, I think our results speak for the
 
 ![reflections](/screenshots/reflections.png)
 
-We obviously get very nice reflections from the ray-tracing. The ray-tracer supports 3 basic shapes: planes, spheres, and voxels. Ray tracing is the first of our 2 render passes, and it is obviously _very_ expensive - especially since we don't have any spatial acceleration structures (yet). To mitigate this cost, we normally render to a small 256 x 256 texture. This is later upsampled to the whole screen in the second render pass. On (very) powerfull hardware this intermediary texture can be made larger, thats why the screenshots look so crisp.
+We obviously get very nice reflections from the ray-tracing. The ray-tracer supports 3 basic shapes: planes, spheres, and voxels. Ray tracing is the first of our 2 render passes, and it is obviously _very_ expensive - especially since we don't have any spatial acceleration structures (yet), so every ray is tested against every object each frame. To mitigate this cost, we normally render to a small 256 x 256 texture. This is later upsampled to the whole screen in the second render pass. On (very) powerfull hardware this intermediary texture can be made larger, thats why the screenshots look so crisp.
 
 ## Shadows
 
