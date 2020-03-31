@@ -47,9 +47,14 @@ struct Portal {
 	float radius;
 };
 
-static GLFWwindow* window;
-static double cursorX, cursorY;
+static const float jumpVelocity = 10;
+static const float gravity = 40.0f;
+static const float playerHeight = 0.9f;
+static const float floatMax = 3.402823466e+38;
+static const float rayEpsilon = 0.001f;
+static const float PI = 3.141592741f;
 
+static GLFWwindow* window;
 static Shader raytraceShader;
 static Shader paintShader;
 static GpuBuffer fullscreenQuad;
@@ -64,13 +69,6 @@ static uint raytraceOutputFramebuffer;
 static uint fullscreenQuadVAO;
 static Texture raytraceOutputTexture;
 
-static const float jumpVelocity = 10;
-static const float gravity = 40.0f;
-static const float playerHeight = 0.9f;
-static const float floatMax = 3.402823466e+38;
-static const float rayEpsilon = 0.001f;
-static const float PI = 3.141592741f;
-
 static vec3 cameraPos = vec3(0, 10, 0);
 static vec3 cameraDir = vec3(0, 0, -1);
 static vec3 cameraUp = vec3(0, 1, 0);
@@ -84,6 +82,11 @@ static GameMode gameMode = PlayMode;
 static uint material = 2;
 static Light lightBuffer[100];
 
+//
+// Functions below were almost exactly copy pasted
+// from the shader code and they are used for physics.
+//
+
 static mat3 getPortalMatrix(Portal portal) {
 	vec3 n = normalize(portal.normal);
 	vec3 b = vec3(0, 1, 0);
@@ -94,6 +97,7 @@ static mat3 getPortalMatrix(Portal portal) {
 	b = normalize(cross(t, n));
 	return transpose(mat3(t, b, n));
 }
+
 static float intersect(Ray r, Plane p) {
 	const float epsilon = 0.001;
 	float denom = dot(r.dir, p.normal);
@@ -104,6 +108,7 @@ static float intersect(Ray r, Plane p) {
 	}
 	return floatMax;
 }
+
 static float intersect(Ray r, Sphere s) {
 	float a = 1;
 	float b = 2 * dot(r.pos - s.pos, r.dir);
@@ -114,11 +119,15 @@ static float intersect(Ray r, Sphere s) {
 	else
 		return (float)-0.5 * (b + sqrt(discriminant));
 }
+
 static float intersect(Ray r, Voxel v) {
+	// If the ray direction is 0, we will divide by 0!
+	// correct this case if it happens..
 	const float epsilon = 0.001;
 	if (r.dir.x == 0) r.dir.x = epsilon;
 	if (r.dir.y == 0) r.dir.y = epsilon;
 	if (r.dir.z == 0) r.dir.z = epsilon;
+	
 	vec3 invDir = 1.0f / r.dir;
 	vec3 ld = (vec3(v.pos) - r.pos) * invDir;
 	vec3 rd = (vec3(v.pos) - r.pos) * invDir + invDir;
@@ -126,11 +135,13 @@ static float intersect(Ray r, Voxel v) {
 	vec3 maxd = max(ld, rd);
 	float dmin = max(max(mind.x, mind.y), mind.z);
 	float dmax = min(min(maxd.x, maxd.y), maxd.z);
+
 	if (dmin > dmax)
 		return floatMax;
 	else
 		return dmin;
 }
+
 static float intersect(Ray r, Portal p) {
 	const float epsilon = 0.001;
 	float denom = dot(r.dir, p.normal);
@@ -145,6 +156,11 @@ static float intersect(Ray r, Portal p) {
 	}
 	return floatMax;
 }
+
+// Unlike the shader ray-trace function, this one doesn't pass 
+// through portals because its mostly used for physics.
+//HACK: currently the ray returned by this function contains 
+//      the normal of the object hit because we need that...
 static Ray trace(Ray ray) {
 	vec3 hitNormal;
 	float hitDist = floatMax;
@@ -181,6 +197,8 @@ static Ray trace(Ray ray) {
 	ray.dir = hitNormal;
 	return ray;
 }
+
+// Check both portals and return an index to the closer one.
 static int getClosestPortal(vec3 pos) {
 	Portal P1 = portals[0];
 	Portal P2 = portals[1];
@@ -189,6 +207,8 @@ static int getClosestPortal(vec3 pos) {
 	else
 		return 1;
 }
+
+// Print the material that was picked to the user.
 static void printPickedMaterial() {
 	switch (material) {
 		case 1:  printf("selected Cyan\n"); break;
@@ -204,12 +224,17 @@ static void printPickedMaterial() {
 		default: printf("selected material %d\n", (int)material); break;
 	}
 }
+
+// Used a lot for physics.
 static float getDistanceToNearestObject(vec3 from, vec3 dir) {
 	Ray r0 = { from, normalize(dir) };
 	Ray r1 = trace(r0);
 	return distance(r0.pos, r1.pos);
 }
-static vec3 moveWithCollisionCheck(vec3 from, vec3 dir, float epsilon = rayEpsilon) {
+
+// Move in the given direction if there is no obstacle in the way.
+// If there is an obstacle then only move as much as possible before intersecting the obstacle.
+static vec3 moveWithCollisionCheck(vec3 from, vec3 dir, float epsilon=rayEpsilon) {
 	float dist = length(dir);
 	dir = normalize(dir);
 	Ray movementRay = { from, dir };
@@ -217,6 +242,12 @@ static vec3 moveWithCollisionCheck(vec3 from, vec3 dir, float epsilon = rayEpsil
 	float maxDist = max(0.0f, distance(movementRayEnd.pos, movementRay.pos) - epsilon);
 	return from + min(dist, maxDist) * dir;
 }
+
+// This is machine generated code that loads the default scene.
+// At some point when you pressed the middle mouse button we would
+// generate the code below for all objects in the scene. We removed
+// this for simplicity now.
+//TODO: move stuff like this to some sort of scene file??
 static void loadScene() {
 	lights.create(24);
 	lights.push({ { -1.81297, 5.7906, -4.21272 }, { 0.579913, 1.69076, 0.00375378 } });
@@ -523,61 +554,69 @@ static void loadScene() {
 	}
 }
 
+// This function is called whenever a key is pressed or released.
 void gameOnKey(GLFWwindow*, int key, int scancode, int action, int mods) {
-	if (action == GLFW_PRESS) {
-		if (key == GLFW_KEY_ESCAPE) {
+	
+	// We only care about presses.
+	if (action != GLFW_PRESS)
+		return;
+	
+	switch (key) {
+		case GLFW_KEY_ESCAPE: // quit immediately
 			glfwSetWindowShouldClose(window, GLFW_TRUE);
-		}
-		else if (key == GLFW_KEY_F) {
+			break;
+		case GLFW_KEY_F:      // make the game fullscreen
+		
 			GLFWmonitor* monitor = glfwGetWindowMonitor(window);
 			GLFWmonitor* primaryMonitor = glfwGetPrimaryMonitor();
 			int width, height;
 			glfwGetMonitorWorkarea(primaryMonitor, NULL, NULL, &width, &height);
 			if (!monitor) {
 				glfwSetWindowMonitor(window, primaryMonitor, 0, 0, width, height, 60);
-			}
-			else {
+			} else {
 				glfwSetWindowMonitor(window, NULL, (width - 1280) / 2, (height - 720) / 2, 1280, 720, 60);
 			}
-		}
-		else if (key == GLFW_KEY_SPACE) {
+			
+			break;
+		case GLFW_KEY_SPACE:  // jump/double jump
+		
 			if (velocityY == 0) {
 				velocityY = jumpVelocity;
-			}
-			else if (doubleJumpReady) {
+			} else if (doubleJumpReady) {
 				velocityY = jumpVelocity;
 				doubleJumpReady = false;
 			}
-		}
-		else if (key == GLFW_KEY_P) {
+		
+			break;
+		case GLFW_KEY_P:      // switch to play mode
 			gameMode = PlayMode;
 			printf("now in Play Mode\n");
-		}
-		else if (key == GLFW_KEY_B) {
+			break;
+		case GLFW_KEY_B:      // switch to build mode
 			gameMode = BuildMode;
 			printf("now in Build Mode\n");
-		}
-
-		if (gameMode == BuildMode) {
-			switch (key) {
-			case GLFW_KEY_0:
-			case GLFW_KEY_1:
-			case GLFW_KEY_2:
-			case GLFW_KEY_3:
-			case GLFW_KEY_4:
-			case GLFW_KEY_5:
-			case GLFW_KEY_6:
-			case GLFW_KEY_7:
-			case GLFW_KEY_8:
-			case GLFW_KEY_9:
+			break;
+			
+		case GLFW_KEY_0:      // select appropriate material
+		case GLFW_KEY_1:
+		case GLFW_KEY_2:
+		case GLFW_KEY_3:
+		case GLFW_KEY_4:
+		case GLFW_KEY_5:
+		case GLFW_KEY_6:
+		case GLFW_KEY_7:
+		case GLFW_KEY_8:
+		case GLFW_KEY_9:
+			if (gameMode == BuildMode) {
 				material = (uint)(1 + key - GLFW_KEY_0);
 				printPickedMaterial();
-				break;
-			default: break;
 			}
-		}
+			break;
+		default: break;
 	}
 }
+
+// This is called whenever the mouse is moved to (newX, newY).
 void gameOnMouseMove(GLFWwindow*, double newX, double newY) {
 	double dX = newX - cursorX;
 	double dY = newY - cursorY;
@@ -600,6 +639,8 @@ void gameOnMouseMove(GLFWwindow*, double newX, double newY) {
 	cameraDir = normalize(vec3(rot * vec4(0, 0, -1, 0)));
 	cameraRight = normalize(cross(cameraDir, cameraUp));
 }
+
+// This is called when any mouse button is pressed/released..
 void gameOnMouseButton(GLFWwindow*, int button, int action, int mods) {
 	if (action == GLFW_PRESS) {
 		Ray r1 = { cameraPos, cameraDir };
@@ -645,6 +686,8 @@ void gameOnMouseButton(GLFWwindow*, int button, int action, int mods) {
 		}
 	}
 }
+
+// This function is called whenever the mosue wheel is scrolled.
 void gameOnMouseWheel(GLFWwindow*, double dX, double dY) {
 	if (gameMode == PlayMode) {
 		float delta = 1.1f;
@@ -661,11 +704,15 @@ void gameOnMouseWheel(GLFWwindow*, double dX, double dY) {
 		printPickedMaterial();
 	}
 }
-void gameOnInit(GLFWwindow *w) {
+
+// This should be called to initialize the game.
+void gameInit(GLFWwindow *w) {
+	
+	// Initialize the window and the cursor position.
 	window = w;
 	glfwGetCursorPos(window, &cursorX, &cursorY);
 
-	// Create a framebuffer for the raytracer output
+	// Create a 256x256 framebuffer for the raytracer output.
 	glGenFramebuffers(1, &raytraceOutputFramebuffer);
 	glBindFramebuffer(GL_FRAMEBUFFER, raytraceOutputFramebuffer);
 	raytraceOutputTexture = createTexture(NULL, 256, 256, GL_RGB16F);
@@ -674,6 +721,7 @@ void gameOnInit(GLFWwindow *w) {
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 	glCheckErrors();
 
+	// Load all the textures into a texture atlas/array.
 	const char* textureFiles[] = {
 		"textures/dirt.png",          // 0
 		"textures/wood_dark.png",     // 1
@@ -690,9 +738,11 @@ void gameOnInit(GLFWwindow *w) {
 	textureAtlas = loadTextureArray(textureFiles, numTextures, GL_RGB8);
 	glCheckErrors();
 
+	// Load both shaders.
 	raytraceShader = loadShader("shaders/rayvert.glsl", "shaders/rayfrag.glsl");
 	paintShader = loadShader("shaders/paintvert.glsl", "shaders/paintfrag.glsl");
 	
+	// Load some semi-fake vertex data to render a fullscreen quad.
 	vec2 vertData[] = {
 		{ -1, 1 },
 		{ -1,-1 },
@@ -704,10 +754,14 @@ void gameOnInit(GLFWwindow *w) {
 	fullscreenQuad = createGpuBuffer(vertData, sizeof(vertData));
 	glEnableVertexAttribArray(0);
 	glVertexAttribPointer(0, 2, GL_FLOAT, false, sizeof(vec2), 0);
-
+	
+	// We don't need to unbind the VAO or VBO since we only have one..
+	
 	loadScene();
 }
-void gameOnTerminate() {
+
+// Destroy all resources used by the game.
+void gameTerminate() {
 	destroyShader(paintShader);
 	destroyShader(raytraceShader);
 	destroyGpuBuffer(fullscreenQuad);
@@ -720,10 +774,12 @@ void gameOnTerminate() {
 	portals.destroy();
 	glCheckErrors();
 }
-void gameOnUpdate(double dt) {
-	float moveSpeed = (float)dt * 5;
+
+// Call this every frame.
+void gameUpdate(double deltaTime) {
+	float moveSpeed = (float)deltaTime * 5;
 	if (glfwGetKey(window, GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS)
-		moveSpeed *= 2.0f;
+		moveSpeed *= 2; // Sprint when shift is held down.
 
 	vec3 moveDir = vec3(0);
 	if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS) {
@@ -758,7 +814,8 @@ void gameOnUpdate(double dt) {
 	if (gameMode == PlayMode) {
 		deltaPos.y = 0;
 
-		vec3 dpos = vec3(deltaPos.x, velocityY * (float)dt, deltaPos.z);
+		// First check if we should go through a portal.
+		vec3 dpos = vec3(deltaPos.x, velocityY * (float)deltaTime, deltaPos.z);
 		Ray cameraRay = { cameraPos, normalize(dpos) };
 		int portalInIndex = getClosestPortal(cameraPos);
 		Portal portalIn = portals[(size_t)portalInIndex];
@@ -780,27 +837,36 @@ void gameOnUpdate(double dt) {
 		}
 
 		if (velocityY > 0) {
-			cameraPos = moveWithCollisionCheck(cameraPos, vec3(0, (float)dt * velocityY, 0));
+			// Collision check + movement against the player head.
+			cameraPos = moveWithCollisionCheck(cameraPos, vec3(0, (float)deltaTime * velocityY, 0));
 		}
 		else if (velocityY < 0) {
+			// Collision check + movement against the player feet.
 			vec3 feetPos0 = cameraPos - vec3(0, playerHeight, 0);
-			vec3 feetPos1 = moveWithCollisionCheck(feetPos0, vec3(0, (float)dt * velocityY, 0), 0.01f);
+			vec3 feetPos1 = moveWithCollisionCheck(feetPos0, vec3(0, (float)deltaTime * velocityY, 0), 0.01f);
 			cameraPos += feetPos1 - feetPos0;
 			if (distance(feetPos0, feetPos1) < 0.001f) {
 				velocityY = 0;
 				doubleJumpReady = true;
 			}
 		}
-
+		
+		// Collision check + movement in the XZ plane.
 		if (deltaPos.x != 0)
 			cameraPos = moveWithCollisionCheck(cameraPos, vec3(deltaPos.x, 0, 0), 0.1f);
 		if (deltaPos.z != 0)
 			cameraPos = moveWithCollisionCheck(cameraPos, vec3(0, 0, deltaPos.z), 0.1f);
 
+		// If head hit something then stop vertical velocity.
 		float headDist = getDistanceToNearestObject(cameraPos, vec3(0, 1, 0));
 		if (headDist < 0.01f) {
 			velocityY = min(0.0f, velocityY);
 		}
+		
+		// Collision check against feed to test if we should start falling down.
+		// We sample down from 5 separate points, 1 is directly at the players feet
+		// and the other 4 are AROUND the player's feet. This makes the player
+		// able to walk a tiny bit of a ledge without falling which feels a bit better.
 		float feetDist = getDistanceToNearestObject(cameraPos, vec3(0, -1, 0));
 		float fallingDist = feetDist;
 		float edgeTolerance = 0.25f;
@@ -809,19 +875,22 @@ void gameOnUpdate(double dt) {
 		fallingDist = min(fallingDist, getDistanceToNearestObject(cameraPos + vec3(+edgeTolerance, 0, -edgeTolerance), vec3(0, -1, 0)));
 		fallingDist = min(fallingDist, getDistanceToNearestObject(cameraPos + vec3(+edgeTolerance, 0, +edgeTolerance), vec3(0, -1, 0)));
 		if (fallingDist > playerHeight + 0.1f) {
-			velocityY -= (float)dt * gravity;
+			velocityY -= (float)deltaTime * gravity;
 		}
 		if (feetDist < playerHeight) {
 			headDist = getDistanceToNearestObject(cameraPos, vec3(0, -1, 0));
 			cameraPos = cameraPos + feetDist * vec3(0, -1, 0) + vec3(0, playerHeight, 0);
 			velocityY = max(velocityY, 0.0f);
-			doubleJumpReady = true;
+			doubleJumpReady = true; // Reset double jump when we hit ground.
 		}
 	}
 	else {
 		cameraPos += deltaPos;
 	}
 
+	// Move all the lights around.
+	//HACK: The information about how to move all the lights is currently
+	//      stored in a hacky global buffer. We should do this in a cleaner way..
 	float t = (float)glfwGetTime();
 	for (size_t i = 0; i < lights.length(); ++i) {
 		Light l = lights[i];
@@ -833,11 +902,17 @@ void gameOnUpdate(double dt) {
 		l.pos.z = lightBuffer[i].pos.z + amplitudez * sin(freqz * t);
 		lights[i] = l;
 	}
+	
+	//
+	// Render the scene
+	//
 
+	// First off, we don't have to call glClear since we will
+	// overwrite the whole texture anyway.
+	
+	// First do the ray tracing to a small render buffer.
 	glBindFramebuffer(GL_FRAMEBUFFER, raytraceOutputFramebuffer);
 	glViewport(0, 0, 256, 256);
-	//glClear(GL_COLOR_BUFFER_BIT);
-
 	bindShader(raytraceShader);
 	lights.bind(GL_SHADER_STORAGE_BUFFER, 0);
 	materials.bind(GL_SHADER_STORAGE_BUFFER, 1);
@@ -858,6 +933,7 @@ void gameOnUpdate(double dt) {
 	setUniform(raytraceShader, 9, 0);
 	glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
 
+	// Now do a second pass with the paint shader
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 	glViewport(0, 0, width, height);
 	bindShader(paintShader);
@@ -866,13 +942,15 @@ void gameOnUpdate(double dt) {
 	bindTexture(raytraceOutputTexture, 0);
 	glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
 
+	// Swap the back buffer and the front buffer to display the new image.
 	glfwSwapBuffers(window);
 
+	// Hacky frame-rate counter that displayes frame rate in the window title..
 	static int frameAcc = 0;
 	static double timeAcc = 0;
 	++frameAcc;
-	timeAcc += dt;
-	while (timeAcc >= 1) {
+	timeAcc += deltaTime;
+	while (timeAcc >= 0.25) {
 		char buffer[256];
 		sprintf(buffer, "Painted Portal Tracer [%.1lf fps] - %s mode", frameAcc / timeAcc,
 			gameMode == PlayMode ? "play" :
