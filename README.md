@@ -6,10 +6,9 @@ Playing around with real time raytracing and non-photorealistic rendering. For t
 
 This program..
 
-1. Does not run using Qt. It uses a couple of different libraries (see below) however even all of them combined have way fewer features than the massive Qt library, so we hope you will still judge this to be fair game for the competition.
-2. Is a **massive** performance hog. You will definitely need a decent dedicated graphics card in order to run this smoothly.
-3. Requires **at least** OpenGL 4.3 (2012 or newer hardware) since we use [shader storage buffers](https://www.khronos.org/opengl/wiki/Shader_Storage_Buffer_Object).
-4. Relies on a good OpenGL **driver** to compile our shaders. Some open-source linux drivers that we tested couldn't do this, if you are trying to get this to run and getting complaints about register allocation then this problem is happening to you.
+1. Is a **massive** performance hog. You will definitely need a decent dedicated graphics card in order to run this smoothly.
+2. Requires **at least** OpenGL 4.3 (2012 or newer hardware) since we use [shader storage buffers](https://www.khronos.org/opengl/wiki/Shader_Storage_Buffer_Object).
+3. Relies on a good OpenGL **driver** to compile our shaders. Some open-source linux drivers that we tested couldn't do this, if you are trying to get this to run and getting complaints about register allocation then this problem is happening to you.
 
 With those uh.. minor quirks.. out of the way, I think our results speak for themselves.
 
@@ -53,6 +52,12 @@ We re-used the ray tracing code from the shader in our gameplay code to implemen
 
 We keep track of changes made to the shader files during runtime. When you change a shader, it will _immediately_ be recompiled and injected into the program _at runtime_, so you can instantly get feedback on what changed. This makes it very easy and fun to experiment with our shaders while running - try it out for yourself. For example, the painting shader is disabled by default from the [`paintfrag.glsl`](/shaders/paintfrag.glsl) file. If you comment out the `return` statement near the beggning of `main` the painting effect will be enabled.
 
+## Qt information
+
+This program was originally designed without Qt. We have used the one week of the extended deadline to implent a Qt port so that we can adhere by the competition rules. You can find a zip file containing the full Qt project [here](/Qt%20Port.zip). The Qt port is provided **only** in order to adhere to the guidelines of the competition. If you want to actually try to compile or run this program WE STRONGLY ADVISE AGAINST USING THE QT PORT.
+
+Not only does the Qt port perform worse than the original GLFW version, but the controls and frame timings are also off due to how Qt deals with these things. The original application feels much smoother and runs faster, although the Qt port still works and has equivalent functionality. The code for the original GLFW application is much cleaner as the Qt port was duct-taped together and was not the main target - do not look at the Qt code if you want to learn from the code.
+
 ## How to compile..
 
 #### .. with Visual Studio 
@@ -73,13 +78,16 @@ $ clang++ -O2 src/*.cpp -lm -lglfw
 
 Version of GLFW for [Windows](/lib/glfw3.lib), [Linux](/lib/libglfw3.so), and [Mac](/lib/libglfw3.a) are provided in the [`/lib`](/lib) directory.
 
+#### .. With Qt (not recommended)
+
+A zip file containing the full Qt project files is provided [here](/Qt%20Port.zip). Everything should already be set up. 
+
 ### Requirements
 
 - C++03 compiler
 - OpenGL 4.3 capable GPU
 - Decent GPU drivers
 - Decently powerful computer
-- GLFW library installed on your system (or use the one we provide)
 
 ### Running
 
@@ -88,15 +96,16 @@ Just run the executable you compiled and make sure the [`/shaders`](/shaders) an
 If you couldn't get the code to compile for whatever reason you can try running the pre-compiled exectables in the [`/bin`](/bin) directory. [One](/bin/Paint%20Tracer.exe) is for 64-bit windows, and the [other](/bin/Paint%20Tracer.out) is for 64-bit linux.
 
 ### Libraries used
-- [GLFW](https://www.glfw.org/) for opening a window and creating an OpenGL context.
-- [GLAD](https://glad.dav1d.de/) for loading OpenGL functions.
+- [GLFW](https://www.glfw.org/) for opening a window and creating an OpenGL context (not used in the Qt port).
+- [GLAD](https://glad.dav1d.de/) for loading OpenGL functions (not used in the Qt port).
 - [GLM](https://glm.g-truc.net/0.9.9/index.html) for math.
-- [STB Image](https://github.com/nothings/stb) for opening .png files.
+- [STB Image](https://github.com/nothings/stb) for opening .png files (not used in the Qt port).
+- [Qt](https://www.qt.io/) because it was mandated for the competition.
 
 ### Controls
 
 You can _move_ around with `WASD`, and _look_ around with the mouse. You can _jump_ with `spacebar` and also _double jump_ if you jump while in the air. The left and right mouse buttons will place the two portals to the surface you are looking at.
 
-You can press `B` to go into _build-mode_. While in build mode you aren't affected by gravity, and you don't collide with the geometry. Instead you can press `spacebar` to _go up_, and `control` to _go down_. `Left-click` will _place a block_ instead of a portal. You can _choose the material_ of the block being placed with the `mouse-wheel` or numbers `0`..`9`. Pressing `P` will take you _out of build mode_.
+You can press `B` to go into _build-mode_. While in build mode you aren't affected by gravity, and you don't collide with the geometry. Instead you can press `spacebar` to _go up_, and `control` to _go down_. `Left-click` will _place a block_ instead of a portal. You can _choose the material_ of the block being placed with the `mouse-wheel` or numbers `0`..`9`. Pressing `P` will take you _out of build mode_. You can press `ESC` at any time to close the game.
     
 Have fun! :)
