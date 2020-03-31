@@ -9,7 +9,7 @@ This program..
 1. Does not run using Qt. It uses a couple of different libraries (see below) however even all of them combined have way fewer features than the massive Qt library, so we hope you will still judge this to be fair game for the competition.
 2. Is a **massive** performance hog. You will definitely need a decent dedicated graphics card in order to run this smoothly.
 3. Requires **at least** OpenGL 4.3 (2012 or newer hardware) since we use [shader storage buffers](https://www.khronos.org/opengl/wiki/Shader_Storage_Buffer_Object).
-4. Relies on a good OpenGL **driver** to compile our shaders. Some open-source linux drivers that we tested couldn't do this..
+4. Relies on a good OpenGL **driver** to compile our shaders. Some open-source linux drivers that we tested couldn't do this, if you are trying to get this to run and getting complaints about register allocation then this problem is happening to you.
 
 With those uh.. minor quirks.. out of the way, I think our results speak for themselves.
 
