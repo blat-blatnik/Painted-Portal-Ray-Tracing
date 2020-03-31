@@ -1,6 +1,6 @@
 # Painted Portal real-time Ray Tracing
 
-Playing around with real time raytracing and non-photorealistic rendering. For the contest subission of the Computer Graphics course University of Groningen 2020. There were two categories for the competition: OpenGL realtime rendering, and ray tracing. Since this is a _ray tracer_ running in real time _with_ OpenGL, this is a submission for both contest categories.
+Playing around with real time raytracing and non-photorealistic rendering for the contest subission of the Computer Graphics course University of Groningen 2020. There were two categories for the competition: OpenGL realtime rendering, and ray tracing. Since this is a _ray tracer_ running in real time _with_ OpenGL, this is a submission for both contest categories.
 
 Made by s3301419 and s3324818.
 
