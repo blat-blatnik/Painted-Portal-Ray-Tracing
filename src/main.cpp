@@ -14,9 +14,6 @@
 #ifdef _MSC_VER
 extern "C" __declspec(dllexport) unsigned long NvOptimusEnablement = 1;
 extern "C" __declspec(dllexport) int AmdPowerXpressRequestHighPerformance = 1;
-#else
-extern "C" unsigned long NvOptimusEnablement = 1;
-extern "C" int AmdPowerXpressRequestHighPerformance = 1;
 #endif
 
 // Callback for when a GLFW error occurs
@@ -101,7 +98,7 @@ int main(int argc, char *argv[]) {
 	glfwSetCursorPosCallback(window, gameOnMouseMove);
 	glfwSetMouseButtonCallback(window, gameOnMouseButton);
 	glfwSetScrollCallback(window, gameOnMouseWheel);
-	gameOnInit(window);
+	gameInit(window);
 
 	// Start the game loop.
 	uint64_t t0 = glfwGetTimerValue();
@@ -109,13 +106,13 @@ int main(int argc, char *argv[]) {
 		glfwPollEvents();
 		checkTrackedFiles(); // Check if the shaders were changed and reload them.
 		uint64_t t1 = glfwGetTimerValue();
-		gameOnUpdate((t1 - t0) / (double)glfwGetTimerFrequency());
+		gameUpdate((t1 - t0) / (double)glfwGetTimerFrequency());
 		glCheckErrors();
 		t0 = t1;
 	}
 
 	// Destroy all used resources and end the program.
-	gameOnTerminate();
+	gameTerminate();
 	glfwDestroyWindow(window);
 	glfwTerminate();
 	return 0;

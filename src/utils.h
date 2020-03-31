@@ -1,4 +1,5 @@
-#pragma once
+#ifndef UTILS_H
+#define UTILS_H
 
 #include <assert.h>
 #include <stdio.h>
@@ -20,3 +21,5 @@ void trackFileChanges(const char *filename, void *userData, bool(*callback)(cons
 // Checks if the contents of all tracked files have changed and triggers the appropriate callbacks.
 // This should ideally be called once per frame.
 void checkTrackedFiles();
+
+#endif

@@ -1,4 +1,5 @@
-#pragma once
+#ifndef GRAPHICS_H
+#define GRAPHICS_H
 
 #include "utils.h"
 #include "glad.h"
@@ -290,3 +291,5 @@ private:
 	std::vector<T> items;
 	std::vector<bool> dirtyBits;
 };
+
+#endif

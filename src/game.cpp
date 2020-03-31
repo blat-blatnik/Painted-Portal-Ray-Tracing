@@ -69,6 +69,7 @@ static uint raytraceOutputFramebuffer;
 static uint fullscreenQuadVAO;
 static Texture raytraceOutputTexture;
 
+static double cursorX, cursorY;
 static vec3 cameraPos = vec3(0, 10, 0);
 static vec3 cameraDir = vec3(0, 0, -1);
 static vec3 cameraUp = vec3(0, 1, 0);
@@ -564,8 +565,8 @@ void gameOnKey(GLFWwindow*, int key, int scancode, int action, int mods) {
 	switch (key) {
 		case GLFW_KEY_ESCAPE: // quit immediately
 			glfwSetWindowShouldClose(window, GLFW_TRUE);
-			break;
-		case GLFW_KEY_F:      // make the game fullscreen
+		break;
+		case GLFW_KEY_F: {    // make the game fullscreen
 		
 			GLFWmonitor* monitor = glfwGetWindowMonitor(window);
 			GLFWmonitor* primaryMonitor = glfwGetPrimaryMonitor();
@@ -577,7 +578,7 @@ void gameOnKey(GLFWwindow*, int key, int scancode, int action, int mods) {
 				glfwSetWindowMonitor(window, NULL, (width - 1280) / 2, (height - 720) / 2, 1280, 720, 60);
 			}
 			
-			break;
+		} break;
 		case GLFW_KEY_SPACE:  // jump/double jump
 		
 			if (velocityY == 0) {
@@ -587,7 +588,7 @@ void gameOnKey(GLFWwindow*, int key, int scancode, int action, int mods) {
 				doubleJumpReady = false;
 			}
 		
-			break;
+		break;
 		case GLFW_KEY_P:      // switch to play mode
 			gameMode = PlayMode;
 			printf("now in Play Mode\n");
@@ -595,7 +596,7 @@ void gameOnKey(GLFWwindow*, int key, int scancode, int action, int mods) {
 		case GLFW_KEY_B:      // switch to build mode
 			gameMode = BuildMode;
 			printf("now in Build Mode\n");
-			break;
+		break;
 			
 		case GLFW_KEY_0:      // select appropriate material
 		case GLFW_KEY_1:
@@ -611,7 +612,7 @@ void gameOnKey(GLFWwindow*, int key, int scancode, int action, int mods) {
 				material = (uint)(1 + key - GLFW_KEY_0);
 				printPickedMaterial();
 			}
-			break;
+		break;
 		default: break;
 	}
 }

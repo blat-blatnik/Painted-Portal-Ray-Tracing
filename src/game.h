@@ -1,4 +1,5 @@
-#pragma once
+#ifndef GAME_H
+#define GAME_H
 
 #include "glfw3.h"
 
@@ -12,3 +13,5 @@ void gameOnMouseWheel(GLFWwindow *, double dX, double dY);
 void gameInit(GLFWwindow *window);
 void gameTerminate();
 void gameUpdate(double deltaTime);
+
+#endif
