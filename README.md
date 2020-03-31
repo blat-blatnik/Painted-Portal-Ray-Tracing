@@ -17,7 +17,7 @@ With those uh.. minor quirks.. out of the way, I think our results speak for the
 
 ![reflections](/screenshots/reflections.png)
 
-We obviously get very nice reflections from the ray-tracing. The ray-tracer supports 3 basic shapes: planes, spheres, and voxels. Ray tracing is the first of our 2 render passes, and it is obviously _very_ expensive - especially since we don't have any spatial acceleration structures (yet), so every ray is tested against every object each frame. To mitigate this cost, we normally render to a small 256 x 256 texture. This is later upsampled to the whole screen in the second render pass. On (very) powerfull hardware this intermediary texture can be made larger, thats why the screenshots look so crisp.
+We obviously get very nice reflections from the ray-tracing. The ray-tracer supports 3 basic shapes: planes, spheres, and voxels. Ray tracing is the first of our 2 render passes, and it is obviously _very_ expensive - especially since we don't have any spatial acceleration structures (yet), so every ray is tested against every object every frame. To mitigate some of this cost, we normally render to a small 256 x 256 texture. This is later upsampled to the whole screen in the second render pass. On (very) powerfull hardware this intermediary texture can be made larger, thats why the screenshots look so crisp and nice.
 
 ## Shadows
 
@@ -29,7 +29,7 @@ Same as the reflections, the nice dynamic shadows are a result of the ray-tracin
 
 ![portals](/screenshots/portal.png)
 
-Portals are the star of this show. We introduced them as soon as we realized how easy it would be to move and distort rays as they hit objects. There are always 2 portals in the scene, an orange portal and a blue portal, when we detect a ray hitting a portal we simply teleport the ray to the other portal and we keep on tracing it - easy. And, ofcourse, portals are recursive.
+Portals are the star of this show. We introduced them as soon as we realized how easy it would be to move and distort rays as they hit objects. There are always 2 portals in the scene, an orange portal and a blue portal, when we detect a ray hitting a portal we simply teleport the ray to the other portal and we keep on tracing it - easy. The same is done for the camera, when the camera collides with the portal it is teletorted to the corresponding portal. And, ofcourse, portals are recursive.
 
 ![portal recursion](/screenshots/recursion.png)
 
@@ -61,7 +61,7 @@ download the Visual Studio project file in the [`/bin`](/bin) directory. Everyth
 
 #### .. with GCC or clang
 
-Make sure to install [GLFW](https://www.glfw.org/download.html) with your package manager. You will need to statically link against the appropriate library for your operating system.
+Make sure to install [GLFW](https://www.glfw.org/download.html) with your package manager, or you can use the libraries provided in the [`/lib`](/lib) directory. You will need to statically link against the appropriate library for your operating system.
 
 ```bash
 $ g++ -O2 src/*.cpp -lm -lglfw
@@ -77,7 +77,7 @@ Version of GLFW for [Windows](/lib/glfw3.lib), [Linux](/lib/libglfw3.so), and [M
 
 - C++03 compiler
 - OpenGL 4.3 capable GPU
-- Good GPU drivers
+- Decent GPU drivers
 - Decently powerful computer
 - GLFW library installed on your system (or use the one we provide)
 
@@ -85,7 +85,7 @@ Version of GLFW for [Windows](/lib/glfw3.lib), [Linux](/lib/libglfw3.so), and [M
 
 Just run the executable you compiled and make sure the [`/shaders`](/shaders) and [`/textures`](/textures) directories are in the same directory as the executable. Also make sure not to rename or delete any of the files.
 
-If you couldn't get the code to compile for whatever reason you can try running the pre-compiled exectables in the [`/bin`](/bin) directory. One is for 64-bit windows, and the other is for 64-bit linux.
+If you couldn't get the code to compile for whatever reason you can try running the pre-compiled exectables in the [`/bin`](/bin) directory. [One](/bin/Paint Tracer.exe) is for 64-bit windows, and the [other](/bin/Paint Tracer.out) is for 64-bit linux.
 
 ### Libraries used
 - [GLFW](https://www.glfw.org/) for opening a window and creating an OpenGL context.
