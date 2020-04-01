@@ -111,3 +111,5 @@ You can _move_ around with `WASD`, and _look_ around with the mouse. You can _ju
 You can press `B` to go into _build-mode_. While in build mode you aren't affected by gravity, and you don't collide with the geometry. Instead you can press `spacebar` to _go up_, and `control` to _go down_. `Left-click` will _place a block_ instead of a portal. You can _choose the material_ of the block being placed with the `mouse-wheel` or numbers `0`..`9`. Pressing `P` will take you _out of build mode_. You can press `ESC` at any time to close the game.
     
 Have fun! :)
+
+And, if you are interested in shaders you should check out our [other repository](https://github.com/blat-blatnik/Pocket-Universe) featuring a beautiful real-time particle simulation implented using GPU compute shaders.
