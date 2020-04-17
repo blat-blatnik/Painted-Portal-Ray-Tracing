@@ -4,10 +4,11 @@
 #include <assert.h>
 #include <stdio.h>
 #include "glad.h"
-#include "glm/glm.hpp"
-#include "glm/gtc/matrix_transform.hpp"
+//#include "glm/glm.hpp"
+//#include "glm/gtc/matrix_transform.hpp"
+#include "bmath.hpp"
 
-using namespace glm;
+//using namespace glm;
 
 // Read the whole file into a malloc'ed buffer and return it. If access to the file is blocked for whatever reason
 // the function will keep trying to open the file for "timeout" seconds before giving up and returning a NULL pointer.

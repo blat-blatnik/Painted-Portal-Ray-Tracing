@@ -1,6 +1,6 @@
 #include "graphics.h"
 #include "game.h"
-#include "glm/glm.hpp"
+#include "bmath.hpp"
 
 enum GameMode {
 	PlayMode,
@@ -163,7 +163,7 @@ static float intersect(Ray r, Portal p) {
 //HACK: currently the ray returned by this function contains 
 //      the normal of the object hit because we need that...
 static Ray trace(Ray ray) {
-	vec3 hitNormal;
+	vec3 hitNormal = vec3(0);
 	float hitDist = floatMax;
 
 	for (uint i = 0; i < planes.length(); ++i) {
@@ -635,8 +635,8 @@ void gameOnMouseMove(GLFWwindow*, double newX, double newY) {
 	}
 
 	mat4 rot = mat4(1);
-	rot = rotate(rot, cameraPitch, vec3(0, 1, 0));
-	rot = rotate(rot, cameraYaw, vec3(1, 0, 0));
+	rot *= rotationMat(vec3(0, 1, 0), cameraPitch);
+	rot *= rotationMat(vec3(1, 0, 0), cameraYaw);
 	cameraDir = normalize(vec3(rot * vec4(0, 0, -1, 0)));
 	cameraRight = normalize(cross(cameraDir, cameraUp));
 }
@@ -804,7 +804,7 @@ void gameUpdate(double deltaTime) {
 
 	if (gameMode == PlayMode)
 		moveDir.y = 0;
-	if (moveDir != vec3(0))
+	if (any(moveDir != vec3(0)))
 		moveDir = moveSpeed * normalize(moveDir);
 
 	vec3 deltaPos =
@@ -925,7 +925,7 @@ void gameUpdate(double deltaTime) {
 
 	int width, height;
 	glfwGetFramebufferSize(window, &width, &height);
-	mat4 view = lookAt(cameraPos, cameraPos + cameraDir, cameraUp);
+	mat4 view = lookAtMatRH(cameraPos, cameraDir, cameraUp);
 	setUniform(raytraceShader, 0, vec2(width, height));
 	setUniform(raytraceShader, 1, cameraFoveaDist);
 	setUniform(raytraceShader, 2, cameraPos);
