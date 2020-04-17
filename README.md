@@ -100,7 +100,7 @@ If you couldn't get the code to compile for whatever reason you can try running 
 ### Libraries used
 - [GLFW](https://www.glfw.org/) for opening a window and creating an OpenGL context (not used in the Qt port).
 - [GLAD](https://glad.dav1d.de/) for loading OpenGL functions (not used in the Qt port).
-- [Bmath]() for math.
+- [Bmath](https://github.com/blat-blatnik/B-Library) for math.
 - [STB Image](https://github.com/nothings/stb) for opening .png files (not used in the Qt port).
 - [Qt](https://www.qt.io/) because it was mandated for the competition.
 
