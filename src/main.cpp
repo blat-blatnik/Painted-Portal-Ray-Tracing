@@ -76,7 +76,7 @@ int main(int argc, char *argv[]) {
 	const char *version = (const char *)glGetString(GL_VERSION);
 	printf("using OpenGL %s: %s\n", version, renderer);
 
-	if (!(GLVersion.major >= 4 && GLVersion.minor >= 3)) {
+	if (GLVersion.major < 4 || (GLVersion.major == 4 && GLVersion.minor < 6)) {
 		printf("ERROR: need at least OpenGL 4.3 to run .. exiting\n");
 		abort();
 	}
